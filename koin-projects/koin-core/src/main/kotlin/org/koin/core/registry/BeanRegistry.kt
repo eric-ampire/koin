@@ -23,6 +23,7 @@ import org.koin.core.logger.Level
 import org.koin.core.module.Module
 import org.koin.core.qualifier.Qualifier
 import org.koin.ext.getFullName
+import org.koin.ext.saveCache
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
@@ -135,6 +136,7 @@ class BeanRegistry {
 
     private fun createSecondaryType(type: KClass<*>): ArrayList<BeanDefinition<*>> {
         definitionsSecondaryTypes[type] = arrayListOf()
+        type.saveCache()
         return definitionsSecondaryTypes[type]!!
     }
 
@@ -147,6 +149,7 @@ class BeanRegistry {
         if (!added && !definition.options.override) {
             throw DefinitionOverrideException("Already existing definition or try to override an existing one: $definition")
         }
+        definition.primaryType.saveCache()
     }
 
     private fun saveDefinitionForTypes(definition: BeanDefinition<*>) {
